@@ -5,9 +5,9 @@ class Consumer:
     def __init__(self):
         self.__url = cfg.url
         self.__port = cfg.port
-        self.__vhost = cfg.source_vhost
+        self.__vhost = cfg.dest_vhost
         self.__cred = pika.PlainCredentials(cfg.cred_id, cfg.cred_pw)
-        self.__queue = cfg.source_queue;
+        self.__queue = cfg.dest_queue;
         return
 
     def on_message(channel, method_frame, header_frame, body):

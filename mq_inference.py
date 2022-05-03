@@ -21,11 +21,16 @@ class Consumer:
         print('Received %s' % body)
         return
 
-    def model_output(channel, method_frame, header_frame, body):
-        message = json.dumps(body)
-        print('model input :',message['stt'])
-        pred = get_model_pred(message['stt'])
+    def model_inference(channel, method_frame, header_frame, body):
+        print('body:',body)
+        message = json.loads(body)
+        print('message:',message)
+        print('model input :',message['text'])
+        pred = get_model_pred(message['text'])
         message['pred'] = pred
+        print(message)
+        print(type(message))
+        message = json.dumps(message)
         publisher = Publisher()
         publisher.main(message)
         return
@@ -35,7 +40,7 @@ class Consumer:
         chan = conn.channel()
         chan.basic_consume(
             queue = self.__queue, 
-            on_message_callback = Consumer.model_output,
+            on_message_callback = Consumer.model_inference,
             auto_ack = False
         )
         print('Consumer is starting...')
@@ -46,9 +51,9 @@ class Publisher:
     def __init__(self):
         self.__url = cfg.url
         self.__port = cfg.port
-        self.__vhost = cfg.output
+        self.__vhost = cfg.dest_vhost
         self.__cred = pika.PlainCredentials(cfg.cred_id,cfg.cred_pw)
-        self.__queue = 'output_queue';
+        self.__queue = cfg.dest_queue;
         return
 
     def main(self,message):

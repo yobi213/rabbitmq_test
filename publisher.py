@@ -28,7 +28,11 @@ data = {
     "text": "This is description about me"     
 } 
 
+print(data)
+print('type of data',type(data))
 message = json.dumps(data)
+print(message)
+print('type of message',type(message))
 
 publisher = Publisher()
 publisher.main(message)
